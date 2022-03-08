@@ -20,7 +20,7 @@ from __future__ import print_function
 import os
 import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')
+#matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from skimage import io
@@ -294,6 +294,11 @@ if __name__ == '__main__':
     seq_dets = np.loadtxt(seq_dets_fn, delimiter=',')
     seq = seq_dets_fn[pattern.find('*'):].split(os.path.sep)[0]
 
+    if not os.path.exists('output'):
+        os.mkdir('output')
+    if not os.path.exists('output/{}'.format(seq)):
+        os.mkdir('output/{}'.format(seq))
+
     with open(os.path.join('output', '%s.txt'%(seq)),'w') as out_file:
       print("Processing %s."%(seq))
       for frame in range(int(seq_dets[:,0].max())):
@@ -321,6 +326,7 @@ if __name__ == '__main__':
 
         if(display):
           fig.canvas.flush_events()
+          plt.savefig("output/{}/{}.png".format(seq, frame))
           plt.draw()
           ax1.cla()
 
