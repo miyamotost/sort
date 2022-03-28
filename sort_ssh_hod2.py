@@ -447,6 +447,7 @@ def tracking(hod_data, basename, framedir, anno_data):
                        min_hits=args.min_hits,
                        iou_threshold=args.iou_threshold) #create instance of the SORT tracker
 
+    # 検出結果から追跡結果作成
     for i in range(len(hod_data)):
         frame = hod_data[i]['frame_index']
         dets = hod_data[i]['hand_dets'] #[boxes(4), score(1), state(1), offset_vector(3), left/right(1)]
@@ -474,14 +475,14 @@ def tracking(hod_data, basename, framedir, anno_data):
 
     hand1 = complement(hand1, n=15) # 予測モデル, sortでの検出抜けの補正
     hand2 = complement(hand2, n=15)
-    hand1, hand2 = makeleftright(hand1, hand2) # 左右の決定
+    shand1, hand2 = makeleftright(hand1, hand2) # 左右の決定
     _ = False # TODO: 軌道の平均化(滑らかにする)(近似曲線?)
 
     # 保存
     if args.save_path:
         print('save {}.pkl'.format(basename))
         f = open('{}/{}.pkl'.format(args.save_path, basename),'wb')
-        pkl.dump({'hand_L': hand1, 'hand_R': hand2}, f)
+        pkl.dump({'hand_L': hand1, 'hand_R': hand2, 'hod_data': hod_data, 'trackerss': trackerss}, f)
         f.close
 
     # 結果出力
